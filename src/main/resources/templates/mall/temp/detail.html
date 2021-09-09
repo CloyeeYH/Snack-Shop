@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="mall/header::head-fragment('NewBee商城-商品详情','detail')">
+</head>
+<body>
+<header th:replace="mall/header::header-fragment"></header>
+
+<div id="detail">
+    <!-- nav -->
+    <nav th:replace="mall/header::nav-fragment"></nav>
+
+    <div class="dc">
+        <div class="content w">
+            <div class="title fl">商品详情</div>
+            <nav class="fr">
+                <li><a href="##">概述</a></li>
+                <li>|</li>
+                <li><a href="##">详情</a></li>
+                <li>|</li>
+                <li><a href="##">用户评价</a></li>
+                <div class="clear"></div>
+               
+            </nav>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="intro mt20 w clearfix">
+        <div class="left fl" style="position: relative;">
+            <div class="swiper-container fl">
+                <img th:src="@{${goodsDetail.goodsCoverImg}}">
+            </div>
+        </div>
+        <div class="right fr">
+            <div class="h3 ml20 mt20" th:text="${goodsDetail.goodsName}">NewBeeMall</div>
+            <div class="sub_title mr40 ml20 mt10" th:text="${goodsDetail.goodsIntro}">NewBeeMall</div>
+            <div class="item_price mr40 ml20 mt10">
+                <th:block th:text="${goodsDetail.originalPrice}+'.00 元'"></th:block>
+                <del>
+                    <th:block th:text="${goodsDetail.sellingPrice}+'.00 元'"></th:block>
+                </del>
+            </div>
+
+            <div class="order">
+                <input class="car" type="button" th:onclick="'saveAndGoCart('+${goodsDetail.goodsId}+')'" value="立即选购"/>
+                <input class="car" type="button" th:onclick="'saveToCart('+${goodsDetail.goodsId}+')'" value="加入购物车"/>
+            </div>
+            <div class="tb-extra ml20" id="J_tbExtra">
+                <dl>
+                    <dt>承诺</dt>
+                    <dd><a class="J_Cont" title="满足7天无理由退换货申请的前提下，包邮商品需要买家承担退货邮费，非包邮商品需要买家承担发货和退货邮费。" href="#"
+                           target="_blank"><img th:src="@{/mall/image/7d.jpg}">7天无理由</a></dd>
+                </dl>
+                <dl>
+                    <dt>支付</dt>
+                    <dd><a href="##" target="_blank"><img th:src="@{/mall/image/hua.png}">蚂蚁花呗</a><a href="##"
+                                                                                                     target="_blank"><img
+                            th:src="@{/mall/image/card.png}">信用卡支付</a><a href="##" target="_blank"><img
+                            th:src="@{/mall/image/ji.png}">集分宝</a></dd>
+                </dl>
+                <dl>
+                    <dt>支持</dt>
+                    <dd>折旧变现，买新更省钱。<a style="float:none;text-decoration: underline;" href="##">详情</a></dd>
+                </dl>
+
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <!-- 这里使用的是 th:utext 标签，用 th:text 不会解析 html，用 th:utext 会解析 html -->
+    <div class="goods mt20 w clearfix" th:utext="${goodsDetail.goodsDetailContent}">
+    </div>
+</div>
+
+<div class="container" style="margin-top: 10px;margin-bottom: 10px">
+    <div class="card mb-3 shadow-lg p-3 bg-white rounded" id="articleCard">
+        <div class="card-header">
+            <h1 id="articleTitle"></h1>
+            <p class="card-text">
+                <small class="text-muted" id="articleSvg"></small>
+            </p>
+        </div>
+        <div class="card-body">
+            <div id="layout" class="editor">
+                <div id="test-editormd">
+                    <textarea></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form class="mb-3">
+                <div class="form-group">
+                    <textarea class="form-control border border-primary" aria-label="With textarea"
+                              id="articleCommentContent"></textarea>
+                    <div class="invalid-feedback">
+                        评论长度不能大于100也不能为空
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a href="#" class="btn btn-primary disabled" role="button" id="addArticleComment" style="float: right">发表评论</a>
+                </div>
+            </form>
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-top: 10px">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#commentsLists" role="tab"
+                       aria-controls="home" aria-selected="true">评论</a>
+                </li>
+            </ul>
+            <div class="tab-content shadow-lg" id="myTabContent">
+                <div class="tab-pane fade show active" id="commentsLists" role="tabpanel" aria-labelledby="home-tab">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="ReplyComment" tabindex="-1" role="dialog" aria-labelledby="ReplyCommentTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ReplyCommentTitle">回复</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="mb-3">
+                    <div class="form-group">
+                    <textarea class="form-control border border-primary" aria-label="With textarea"
+                              id="ReplyCommentContent"></textarea>
+                        <div class="invalid-feedback">
+                            评论长度不能大于100也不能为空
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="ReplyCommentSend">发表回复</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="mall/footer::footer-fragment"></div>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+<script type="text/javascript">
+    /**
+     * 添加到购物车
+     */
+    function saveToCart(id) {
+        var goodsCount = 1;
+        var data = {
+            "goodsId": id,
+            "goodsCount": goodsCount
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/shop-cart',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    swal({
+                        title: "添加成功",
+                        text: "确认框",
+                        icon: "success",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((flag) => {
+                            window.location.reload();
+                        }
+                    );
+                } else {
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function () {
+                swal("操作失败", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+    /**
+     * 添加到购物车并跳转至购物车页面
+     */
+    function saveAndGoCart(id) {
+        var goodsCount = 1;
+        var data = {
+            "goodsId": id,
+            "goodsCount": goodsCount
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/shop-cart',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    swal({
+                        title: "已将商品加入购物车",
+                        icon: "success",
+                        buttons: {
+                            cancel: "留在当前页",
+                            confirm: "去购物车结算"
+                        },
+                        dangerMode: false,
+                    }).then((flag) => {
+                            if (flag) {
+                                window.location.href = '/shop-cart';
+                            }
+                        }
+                    );
+                } else {
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function () {
+                swal("操作失败", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+   function getReplyComments(replyCommentList){
+        var appendHtml='';
+        for(var i in replyCommentList){
+            var replyCom=replyCommentList[i];
+            appendHtml=appendHtml+'<div class="card">\n' +
+                '<div class="row no-gutters">\n' +
+                '<div class="card-body">\n' +
+                '<h5 class="card-title"><img class="rounded-circle" src="'+replyCom.user.image+'" style="height: 30px;width: 30px;"/>\n' +
+                replyCom.user.username+'<small class="text-muted" style="float: right">'+replyCom.createTime+'</small></h5>\n' +
+                '<p class="card-text">' +replyCom.content+
+                '</p><a href="javascript:showReplyCommentDialog('+replyCom.commentId+','+replyCom.replyUserId+');">回复</a>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+        }
+        return appendHtml;
+    }
+    $("#articleCard").hide();
+    $(document).ready(function () {
+        $.post("/article/getArticle",
+            {
+                articleId: articleID
+            },
+            function (data, status) {
+                if (data && status == 'success') {
+                    $("#articleTitle").text(data.title);
+                    $(document).attr("title", data.title);
+                    var testEditor = editormd.markdownToHTML("test-editormd", {
+                        markdown: data.content,
+                        atLink: false,    // disable @link
+                        htmlDecode: "style,script,iframe",  // you can filter tags decode
+                    });
+                    $("#articleCard").show();
+                    $("#articleSvg").append(addUser(data.author.username) + addDate(data.publishDate) + addLikes(data.likes));
+                } else {
+                    window.location.href = "/404";
+                }
+            });
+        $.post("/comments/getComments", {
+            articleId: articleID
+        }, function (data, status) {
+            console.log(data);
+            if(data){
+                var appendHtml='';
+                for(var i in data){
+                    var comments=data[i];
+                    appendHtml=appendHtml+'<div class="card">\n' +
+                        '<div class="row no-gutters">\n' +
+                        '<div class="card-body">\n' +
+                        '<h5 class="card-title"><img class="rounded-circle" src="'+comments.user.image+'" style="height: 30px;width: 30px;"/>\n' +
+                        comments.user.username+'<small class="text-muted" style="float: right">'+comments.createTime+'</small></h5>\n' +
+                        '<p class="card-text">' +comments.content+
+                        '</p><a href="javascript:showReplyCommentDialog('+comments.id+','+comments.commentUserId+');">回复</a>' +
+                        getReplyComments(comments.replyCommentList)+
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
+                }
+                $("#commentsLists").append(appendHtml);
+            }
+        });
+        if(userID==-1){
+            $("#articleCommentContent").attr("disabled","disabled");
+            $("#articleCommentContent").text("登录后发表评论");
+        }
+    });
+    $("#addArticleComment").click(function () {
+        if ($("#articleCommentContent").val() != "" && $("#articleCommentContent").val().length <= 100) {
+            $.post("/comments/addComments", {
+                articleId: articleID,
+                content: $("#articleCommentContent").val()
+            }, function (data, status) {
+                if(data){
+                    window.location.reload();
+                }
+            });
+        }
+    });
+    $("#ReplyCommentSend").click(function () {
+        if($("#ReplyCommentContent").val()!=""&&$("#ReplyCommentContent").val().length<=100){
+            addReplyComment($("#ReplyCommentContent").val());
+        }
+
+    });
+    $("#articleCommentContent").bind("input propertychange", function () {
+        if ($("#articleCommentContent").val().length <= 100&&$("#articleCommentContent").val()!="") {
+            if ($("#articleCommentContent").hasClass("is-invalid")) {
+                $("#articleCommentContent").removeClass("is-invalid");
+            }
+            if($("#addArticleComment").hasClass("disabled"))
+                $("#addArticleComment").removeClass("disabled");
+        } else {
+            if (!$("#articleCommentContent").hasClass("is-invalid")) {
+                $("#articleCommentContent").addClass("is-invalid");
+            }
+            if(!$("#addArticleComment").hasClass("disabled"))
+                $("#addArticleComment").addClass("disabled");
+        }
+    });
+    $("#ReplyCommentContent").bind("input propertychange", function () {
+        if ($("#ReplyCommentContent").val().length <= 100&&$("#ReplyCommentContent").val()!="") {
+            if ($("#ReplyCommentContent").hasClass("is-invalid")) {
+                $("#ReplyCommentContent").removeClass("is-invalid");
+            }
+            if($("#ReplyCommentSend").hasClass("disabled"))
+                $("#ReplyCommentSend").removeClass("disabled");
+        } else {
+            if (!$("#ReplyCommentContent").hasClass("is-invalid")) {
+                $("#ReplyCommentContent").addClass("is-invalid");
+            }
+            if(!$("#ReplyCommentSend").hasClass("disabled"))
+                $("#ReplyCommentSend").addClass("disabled");
+        }
+    });
+    var commentIdCurrent,repliedUserIdCurrent;
+
+    function addReplyComment(content) {
+        $.post("/comments/addReplyComment",{
+            articleId:articleID,
+            commentId:commentIdCurrent,
+            repliedUserId:repliedUserIdCurrent,
+            content:content
+        },function (data,status) {
+            if(data){
+                window.location.reload();
+            }
+        });
+    }
+
+    function showReplyCommentDialog(commentId,repliedUserId) {
+        if(userID!=-1){
+            commentIdCurrent=commentId;
+            repliedUserIdCurrent=repliedUserId;
+            $("#ReplyComment").modal("show");
+        }else{
+
+        }
+
+    }
+
+
+
+</script>
+<script>
+    readUserInfo();
+</script>
+</body>
+</html>

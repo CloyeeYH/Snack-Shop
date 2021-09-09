@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.CommentsMapper">
+    <resultMap id="BaseResultMap" type="ltd.newbee.mall.entity.GoodsComments">
+        <id column="comments_id" jdbcType="INTEGER" property="commentsId" />
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    comments_id, goods_id, user_id, nick_name, comment, create_time
+  </sql>
+
+    <insert id="insert" parameterType="ltd.newbee.mall.entity.AdminUser">
+    insert into tb_newbee_mall_goods_comments_newadd (comments_id, goods_id, user_id, nick_name, comment, create_time)
+    values (#{commentsId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+      #{nickName,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+
+    <select id="findCommentsByGoodsId" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_comments_newadd
+        where goods_id = #{goodsId, jdbcType=INTEGER}
+        order by comments_id desc
+    </select>
+
+</mapper>
